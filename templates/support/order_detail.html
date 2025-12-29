@@ -1,0 +1,106 @@
+{% extends "core/base.html" %}
+{% block title %}Buyurtma #{{ order.id }} — Support{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 py-12">
+  <h1 class="text-5xl font-bold text-emerald-600 mb-8">Buyurtma #{{ order.id }} — Support Panel</h1>
+
+  <div class="bg-white p-10 rounded-3xl shadow-2xl">
+    <!-- Mahsulot ma’lumoti -->
+    <div class="grid md:grid-cols-2 gap-12 mb-12">
+      <div>
+        {% with order.product.images.all|first as first_img %}
+        {% if first_img %}
+        <img src="{{ first_img.image.url }}" alt="{{ order.product.name }}" class="w-full rounded-3xl shadow-xl object-cover">
+        {% else %}
+        <div class="w-full h-64 bg-gray-200 rounded-3xl flex items-center justify-center">
+          <span class="text-gray-500 text-2xl">Rasm yo‘q</span>
+        </div>
+        {% endif %}
+        {% endwith %}
+      </div>
+
+      <div>
+        <p class="text-xl text-gray-600 mb-4">
+          Foydalanuvchi: <strong>@{{ order.user.username }}</strong>
+        </p>
+        <p class="text-xl text-gray-700 mb-4">
+          <strong>Telefon raqami:</strong>
+          <span class="text-emerald-600 font-bold">
+            {{ order.user.phone_number|default:"Belgilanmagan" }}
+          </span>
+        </p>
+        {% if order.user.full_name %}
+        <p class="text-xl text-gray-700 mb-4">
+          <strong>Ism-familiya:</strong> {{ order.user.full_name }}
+        </p>
+        {% endif %}
+
+        <h2 class="text-4xl font-bold text-gray-900 mb-6">{{ order.product.name }}</h2>
+        <p class="text-3xl font-bold text-emerald-600 mb-6">${{ order.total_price }}</p>
+        <p class="text-xl text-gray-700 mb-4">Buyurtma vaqti: <strong>{{ order.purchased_at|date:"d M Y, H:i" }}</strong></p>
+        <p class="text-xl text-gray-700 mb-8">
+          Joriy yetkazib berish muddati: <strong>{{ order.product.delivery_days }} kun</strong>
+        </p>
+      </div>
+    </div>
+
+    <!-- Yetkazib berish sozlamalari — INPUT BILAN -->
+    <div class="bg-emerald-50 p-8 rounded-2xl mb-12">
+      <h3 class="text-3xl font-bold text-emerald-800 mb-6">Yetkazib berish sozlamalari</h3>
+
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="grid md:grid-cols-2 gap-8 mb-8">
+          <!-- Yetkazib berish muddati (input number) -->
+          <div>
+            <label for="delivery_days" class="block text-xl font-medium text-gray-700 mb-3">
+              Yetkazib berish muddati (kun)
+            </label>
+            <input type="number"
+                   name="delivery_days"
+                   id="delivery_days"
+                   value="{{ order.product.delivery_days }}"
+                   min="1"
+                   max="30"
+                   required
+                   class="w-full px-6 py-4 text-xl border border-gray-300 rounded-xl focus:ring-4 focus:ring-emerald-300 focus:border-emerald-500">
+          </div>
+
+          <!-- Status (select dropdown) -->
+          <div>
+            <label for="status" class="block text-xl font-medium text-gray-700 mb-3">
+              Buyurtma holati
+            </label>
+            <select name="status" id="status" class="w-full px-6 py-4 text-xl border border-gray-300 rounded-xl focus:ring-4 focus:ring-emerald-300 focus:border-emerald-500">
+              <option value="accepted" {% if order.status == 'accepted' %}selected{% endif %}>Buyurtma qabul qilindi</option>
+              <option value="shipping" {% if order.status == 'shipping' %}selected{% endif %}>Yetkazilmoqda</option>
+              <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Yetkazib berildi</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="text-center">
+          <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-2xl py-5 px-16 rounded-xl transition transform hover:scale-105 shadow-xl">
+            Saqlash
+          </button>
+        </div>
+      </form>
+
+      <div class="mt-8 p-6 bg-white rounded-xl border border-emerald-200">
+        <p class="text-lg text-gray-600">
+          O‘zgartirilgan ma’lumotlar foydalanuvchiga darrov ko‘rinadi.
+        </p>
+      </div>
+    </div>
+
+    <!-- Orqaga qaytish -->
+    <div class="mt-12 text-center">
+      <a href="{% url 'support_dashboard' %}" class="text-emerald-600 hover:underline text-2xl font-medium">
+        ← Barcha buyurtmalarga qaytish
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "core/base.html" %}
+{% block title %}Bosh sahifa{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-6 py-12">
+  <!-- Salomlashuv -->
+  <div class="text-center mb-16">
+    <h1 class="text-6xl font-bold text-emerald-600 mb-4">Xush kelibsiz, {{ user.username }}!</h1>
+    <p class="text-xl text-gray-600">Yangi mahsulotlar va aksiyalardan bahramand bo‘ling</p>
+  </div>
+
+  <!-- Oxirgi qo‘shilgan mahsulotlar -->
+  <section class="mb-20">
+    <div class="flex justify-between items-center mb-10">
+      <h2 class="text-4xl font-bold text-gray-800">Oxirgi qo‘shilgan mahsulotlar</h2>
+      <a href="{% url 'product_list' %}" class="text-emerald-600 hover:text-emerald-700 font-medium text-lg flex items-center gap-2">
+        Barchasini ko‘rish
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+
+    {% if latest_products %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      {% for product in latest_products %}
+      <a href="{% url 'product_detail' product.pk %}" class="group block bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-3">
+        <!-- Rasm — gallerydan birinchi rasm -->
+        {% with product.images.all|first as first_img %}
+        <div class="relative overflow-hidden">
+          {% if first_img %}
+          <img src="{{ first_img.image.url }}" alt="{{ product.name }}" class="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110">
+          {% else %}
+          <div class="w-full h-64 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+            <span class="text-gray-400 text-2xl font-medium">Rasm yo‘q</span>
+          </div>
+          {% endif %}
+
+          <!-- Chegirma belgisi (agar bor bo‘lsa) -->
+          {% if product.discount_percent > 0 %}
+          <div class="absolute top-4 left-4 bg-red-600 text-white px-4 py-2 rounded-full text-lg font-bold shadow-lg">
+            -{{ product.discount_percent }}%
+          </div>
+          {% endif %}
+        </div>
+        {% endwith %}
+
+        <div class="p-6">
+          <h3 class="text-xl font-bold text-gray-800 mb-3 line-clamp-2 group-hover:text-emerald-600 transition">
+            {{ product.name }}
+          </h3>
+
+          <!-- Narx -->
+          <div class="flex items-end gap-3 mb-4">
+            {% if product.discount_percent > 0 %}
+            <span class="text-2xl text-gray-500 line-through">${{ product.price|floatformat:2 }}</span>
+            <span class="text-3xl font-bold text-red-600">${{ product.get_discounted_price|floatformat:2 }}</span>
+            {% else %}
+            <span class="text-3xl font-bold text-emerald-600">${{ product.price|floatformat:2 }}</span>
+            {% endif %}
+          </div>
+
+          <!-- Stock -->
+          <p class="text-sm text-gray-600">
+            {% if product.stock > 0 %}
+            <span class="text-green-600 font-medium">Qolgan: {{ product.stock }} ta</span>
+            {% else %}
+            <span class="text-red-600 font-medium">Tugagan</span>
+            {% endif %}
+          </p>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-20 bg-gray-50 rounded-3xl">
+      <p class="text-2xl text-gray-500">Hozircha yangi mahsulot yo‘q</p>
+      <p class="text-lg text-gray-400 mt-4">Tez orada qo‘shiladi!</p>
+    </div>
+    {% endif %}
+  </section>
+
+  <!-- Do‘konga o‘tish tugmasi -->
+  <div class="text-center">
+    <a href="{% url 'product_list' %}" class="inline-block bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-bold text-3xl py-6 px-24 rounded-3xl shadow-2xl transition-all duration-300 transform hover:scale-105 active:scale-95">
+      Do‘konga o‘tish
+      <svg class="w-8 h-8 inline-block ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+      </svg>
+    </a>
+  </div>
+</div>
+{% endblock %}

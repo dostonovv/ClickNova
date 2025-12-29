@@ -1,0 +1,54 @@
+{% extends "core/base.html" %}
+{% block title %}Do‘kon{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-12">
+  <h1 class="text-5xl font-bold text-emerald-600 text-center mb-12">Do‘kon</h1>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+    {% for product in products %}
+    <a href="{% url 'product_detail' product.pk %}" class="block bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition duration-300">
+      <!-- Rasm — gallerydan birinchisini olamiz (asosiy yoki birinchi) -->
+      {% with product.images.all|first as first_img %}
+      {% if first_img %}
+      <img src="{{ first_img.image.url }}" alt="{{ product.name }}" class="w-full h-64 object-cover">
+      {% else %}
+      <div class="w-full h-64 bg-gray-200 flex items-center justify-center">
+        <span class="text-gray-500 text-xl font-medium">Rasm yo‘q</span>
+      </div>
+      {% endif %}
+      {% endwith %}
+
+      <div class="p-6">
+        <h3 class="text-xl font-bold text-gray-800 mb-3 line-clamp-2">{{ product.name }}</h3>
+        <p class="text-gray-600 mb-4 line-clamp-3">{{ product.description|truncatewords:15|default:"Tavsif yo‘q" }}</p>
+
+        <div class="flex justify-between items-center mt-6">
+          <!-- Chegirma bo‘lsa -->
+          {% if product.discount_percent > 0 %}
+          <div class="flex flex-col">
+            <span class="text-xl text-gray-500 line-through">${{ product.price|floatformat:2 }}</span>
+            <span class="text-3xl font-bold text-emerald-600">${{ product.get_discounted_price|floatformat:2 }}</span>
+          </div>
+          <span class="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold">
+            -{{ product.discount_percent }}%
+          </span>
+          {% else %}
+          <span class="text-3xl font-bold text-emerald-600">${{ product.price|floatformat:2 }}</span>
+          {% endif %}
+
+          <!-- Stock -->
+          {% if product.stock > 0 %}
+          <span class="text-sm text-green-600 font-medium">Qolgan: {{ product.stock }} ta</span>
+          {% else %}
+          <span class="text-sm text-red-600 font-medium">Tugagan</span>
+          {% endif %}
+        </div>
+      </div>
+    </a>
+    {% empty %}
+    <p class="text-center text-2xl text-gray-500 col-span-full py-20">Hozircha mahsulot yo‘q</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
