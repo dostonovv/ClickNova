@@ -16,7 +16,8 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'clicknova.onrender.com',  # <--- BU YERGA RENDER BERGAN DOMENNI YOZ!
-    '.onrender.com',  # <--- Qo‘shimcha: barcha sub-domenlar uchun (xavfsiz)
+    '.onrender.com'
+    '*',  # <--- Qo‘shimcha: barcha sub-domenlar uchun (xavfsiz)
 ]
 
 
@@ -38,6 +39,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
