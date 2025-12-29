@@ -1,24 +1,22 @@
-
-
 from pathlib import Path
 import os
-BASE_DIR = Path(__file__).resolve().parent.parent
+import environ
 
-environ.Env.read_env(os.path.join(Path(__file__).resolve().parent.parent, '.env'))
-# SECRET_KEY = 'django-insecure-&v^fbg5d)^5uet5_j5#*-f+4n3_*jl%e$owc7+zr%qj55-*4_y'
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env(
     DEBUG=(bool, False)
 )
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
 SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
+
 ALLOWED_HOSTS = [
-    'yourproject.onrender.com',
-    'www.yourdomain.uz',
+    'clicknova-uz.onrender.com',  # <--- Render bergan linkni bu yerga yoz (deploy bo‘lganda)
     'localhost',
     '127.0.0.1',
 ]
-
 
 
 INSTALLED_APPS = [
