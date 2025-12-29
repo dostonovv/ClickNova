@@ -2,18 +2,20 @@
 {% block title %}Bosh sahifa{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-6 py-12">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
   <!-- Salomlashuv -->
-  <div class="text-center mb-16">
-    <h1 class="text-6xl font-bold text-emerald-600 mb-4">Xush kelibsiz, {{ user.username }}!</h1>
-    <p class="text-xl text-gray-600">Yangi mahsulotlar va aksiyalardan bahramand bo‘ling</p>
+  <div class="text-center mb-12 sm:mb-16">
+    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-emerald-600 mb-4">
+      Xush kelibsiz, {{ user.username }}!
+    </h1>
+    <p class="text-lg sm:text-xl text-gray-600">Yangi mahsulotlar va aksiyalardan bahramand bo‘ling</p>
   </div>
 
   <!-- Oxirgi qo‘shilgan mahsulotlar -->
-  <section class="mb-20">
-    <div class="flex justify-between items-center mb-10">
-      <h2 class="text-4xl font-bold text-gray-800">Oxirgi qo‘shilgan mahsulotlar</h2>
-      <a href="{% url 'product_list' %}" class="text-emerald-600 hover:text-emerald-700 font-medium text-lg flex items-center gap-2">
+  <section class="mb-16 sm:mb-20">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 sm:mb-10 gap-4">
+      <h2 class="text-3xl sm:text-4xl font-bold text-gray-800">Oxirgi qo‘shilgan mahsulotlar</h2>
+      <a href="{% url 'product_list' %}" class="text-emerald-600 hover:text-emerald-700 font-medium text-base sm:text-lg flex items-center gap-2">
         Barchasini ko‘rish
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -22,41 +24,41 @@
     </div>
 
     {% if latest_products %}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
       {% for product in latest_products %}
-      <a href="{% url 'product_detail' product.pk %}" class="group block bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-3">
-        <!-- Rasm — gallerydan birinchi rasm -->
+      <a href="{% url 'product_detail' product.pk %}" class="group block bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+        <!-- Rasm -->
         {% with product.images.all|first as first_img %}
         <div class="relative overflow-hidden">
           {% if first_img %}
-          <img src="{{ first_img.image.url }}" alt="{{ product.name }}" class="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110">
+          <img src="{{ first_img.image.url }}" alt="{{ product.name }}" class="w-full h-48 sm:h-56 lg:h-64 object-cover transition-transform duration-700 group-hover:scale-110">
           {% else %}
-          <div class="w-full h-64 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-            <span class="text-gray-400 text-2xl font-medium">Rasm yo‘q</span>
+          <div class="w-full h-48 sm:h-56 lg:h-64 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+            <span class="text-gray-400 text-lg sm:text-xl font-medium">Rasm yo‘q</span>
           </div>
           {% endif %}
 
-          <!-- Chegirma belgisi (agar bor bo‘lsa) -->
+          <!-- Chegirma belgisi -->
           {% if product.discount_percent > 0 %}
-          <div class="absolute top-4 left-4 bg-red-600 text-white px-4 py-2 rounded-full text-lg font-bold shadow-lg">
+          <div class="absolute top-3 left-3 bg-red-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm sm:text-lg font-bold shadow-lg">
             -{{ product.discount_percent }}%
           </div>
           {% endif %}
         </div>
         {% endwith %}
 
-        <div class="p-6">
-          <h3 class="text-xl font-bold text-gray-800 mb-3 line-clamp-2 group-hover:text-emerald-600 transition">
+        <div class="p-5 sm:p-6">
+          <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-3 line-clamp-2 group-hover:text-emerald-600 transition">
             {{ product.name }}
           </h3>
 
           <!-- Narx -->
           <div class="flex items-end gap-3 mb-4">
             {% if product.discount_percent > 0 %}
-            <span class="text-2xl text-gray-500 line-through">${{ product.price|floatformat:2 }}</span>
-            <span class="text-3xl font-bold text-red-600">${{ product.get_discounted_price|floatformat:2 }}</span>
+            <span class="text-lg sm:text-xl text-gray-500 line-through">${{ product.price|floatformat:2 }}</span>
+            <span class="text-2xl sm:text-3xl font-bold text-red-600">${{ product.get_discounted_price|floatformat:2 }}</span>
             {% else %}
-            <span class="text-3xl font-bold text-emerald-600">${{ product.price|floatformat:2 }}</span>
+            <span class="text-2xl sm:text-3xl font-bold text-emerald-600">${{ product.price|floatformat:2 }}</span>
             {% endif %}
           </div>
 
@@ -73,18 +75,18 @@
       {% endfor %}
     </div>
     {% else %}
-    <div class="text-center py-20 bg-gray-50 rounded-3xl">
-      <p class="text-2xl text-gray-500">Hozircha yangi mahsulot yo‘q</p>
-      <p class="text-lg text-gray-400 mt-4">Tez orada qo‘shiladi!</p>
+    <div class="text-center py-16 sm:py-20 bg-gray-50 rounded-3xl">
+      <p class="text-2xl sm:text-3xl text-gray-500">Hozircha yangi mahsulot yo‘q</p>
+      <p class="text-base sm:text-lg text-gray-400 mt-4">Tez orada qo‘shiladi!</p>
     </div>
     {% endif %}
   </section>
 
   <!-- Do‘konga o‘tish tugmasi -->
   <div class="text-center">
-    <a href="{% url 'product_list' %}" class="inline-block bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-bold text-3xl py-6 px-24 rounded-3xl shadow-2xl transition-all duration-300 transform hover:scale-105 active:scale-95">
+    <a href="{% url 'product_list' %}" class="inline-block bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-bold text-2xl sm:text-3xl py-5 sm:py-6 px-12 sm:px-20 lg:px-24 rounded-3xl shadow-2xl transition-all duration-300 transform hover:scale-105 active:scale-95">
       Do‘konga o‘tish
-      <svg class="w-8 h-8 inline-block ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="w-7 h-7 sm:w-8 sm:h-8 inline-block ml-3 sm:ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
       </svg>
     </a>

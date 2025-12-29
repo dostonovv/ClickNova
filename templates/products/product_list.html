@@ -2,53 +2,97 @@
 {% block title %}Do‘kon{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-4 py-12">
-  <h1 class="text-5xl font-bold text-emerald-600 text-center mb-12">Do‘kon</h1>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+  <!-- Sarlavha -->
+  <div class="text-center mb-12 sm:mb-16">
+    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-emerald-600 mb-4">
+      Do‘kon 🛒
+    </h1>
+    <p class="text-lg sm:text-xl text-gray-600">Eng yaxshi mahsulotlar siz uchun</p>
+  </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+  <!-- Mahsulotlar gridi -->
+  {% if products %}
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
     {% for product in products %}
-    <a href="{% url 'product_detail' product.pk %}" class="block bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition duration-300">
-      <!-- Rasm — gallerydan birinchisini olamiz (asosiy yoki birinchi) -->
+    <a href="{% url 'product_detail' product.pk %}"
+       class="group block bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-3">
+
+      <!-- Rasm — gallerydan birinchi rasm -->
       {% with product.images.all|first as first_img %}
-      {% if first_img %}
-      <img src="{{ first_img.image.url }}" alt="{{ product.name }}" class="w-full h-64 object-cover">
-      {% else %}
-      <div class="w-full h-64 bg-gray-200 flex items-center justify-center">
-        <span class="text-gray-500 text-xl font-medium">Rasm yo‘q</span>
+      <div class="relative overflow-hidden">
+        {% if first_img %}
+        <img src="{{ first_img.image.url }}"
+             alt="{{ product.name }}"
+             class="w-full h-48 sm:h-56 lg:h-64 object-cover transition-transform duration-700 group-hover:scale-110">
+        {% else %}
+        <div class="w-full h-48 sm:h-56 lg:h-64 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+          <span class="text-gray-400 text-lg sm:text-xl font-medium">Rasm yo‘q</span>
+        </div>
+        {% endif %}
+
+        <!-- Chegirma belgisi — ta’sirli va yonib-o‘chadi -->
+        {% if product.discount_percent > 0 %}
+        <div class="absolute top-3 left-3 bg-red-600 text-white px-4 py-2 sm:px-5 sm:py-3 rounded-full text-base sm:text-lg lg:text-xl font-extrabold shadow-lg animate-pulse">
+          -{{ product.discount_percent }}%
+        </div>
+        {% endif %}
+
+        <!-- Kam qolgan bo‘lsa — badge -->
+        {% if product.stock > 0 and product.stock <= 5 %}
+        <div class="absolute top-3 right-3 bg-orange-500 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm sm:text-base font-bold shadow">
+          {{ product.stock }} ta qoldi!
+        </div>
+        {% endif %}
       </div>
-      {% endif %}
       {% endwith %}
 
-      <div class="p-6">
-        <h3 class="text-xl font-bold text-gray-800 mb-3 line-clamp-2">{{ product.name }}</h3>
-        <p class="text-gray-600 mb-4 line-clamp-3">{{ product.description|truncatewords:15|default:"Tavsif yo‘q" }}</p>
+      <div class="p-5 sm:p-6 lg:p-8">
+        <!-- Nomi -->
+        <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-3 line-clamp-2 group-hover:text-emerald-600 transition">
+          {{ product.name }}
+        </h3>
 
-        <div class="flex justify-between items-center mt-6">
-          <!-- Chegirma bo‘lsa -->
-          {% if product.discount_percent > 0 %}
-          <div class="flex flex-col">
-            <span class="text-xl text-gray-500 line-through">${{ product.price|floatformat:2 }}</span>
-            <span class="text-3xl font-bold text-emerald-600">${{ product.get_discounted_price|floatformat:2 }}</span>
+        <!-- Tavsif -->
+        <p class="text-sm sm:text-base text-gray-600 mb-5 line-clamp-3">
+          {{ product.description|truncatewords:20|default:"Tavsif yo‘q" }}
+        </p>
+
+        <!-- Narx va stock -->
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+          <div>
+            {% if product.discount_percent > 0 %}
+            <div class="flex items-end gap-3">
+              <span class="text-lg sm:text-xl text-gray-500 line-through">${{ product.price|floatformat:2 }}</span>
+              <span class="text-2xl sm:text-3xl font-extrabold text-emerald-600">${{ product.get_discounted_price|floatformat:2 }}</span>
+            </div>
+            {% else %}
+            <span class="text-2xl sm:text-3xl font-extrabold text-emerald-600">${{ product.price|floatformat:2 }}</span>
+            {% endif %}
           </div>
-          <span class="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold">
-            -{{ product.discount_percent }}%
-          </span>
-          {% else %}
-          <span class="text-3xl font-bold text-emerald-600">${{ product.price|floatformat:2 }}</span>
-          {% endif %}
 
-          <!-- Stock -->
-          {% if product.stock > 0 %}
-          <span class="text-sm text-green-600 font-medium">Qolgan: {{ product.stock }} ta</span>
-          {% else %}
-          <span class="text-sm text-red-600 font-medium">Tugagan</span>
-          {% endif %}
+          <!-- Stock holati -->
+          <div class="text-right">
+            {% if product.stock > 0 %}
+            <span class="text-sm sm:text-base text-green-600 font-semibold">Qolgan: {{ product.stock }} ta</span>
+            {% else %}
+            <span class="text-sm sm:text-base text-red-600 font-semibold">Tugagan</span>
+            {% endif %}
+          </div>
         </div>
       </div>
     </a>
-    {% empty %}
-    <p class="text-center text-2xl text-gray-500 col-span-full py-20">Hozircha mahsulot yo‘q</p>
     {% endfor %}
   </div>
+  {% else %}
+  <div class="text-center py-20 sm:py-32 bg-gray-50 rounded-3xl">
+    <p class="text-2xl sm:text-3xl lg:text-4xl text-gray-500 mb-6">
+      Hozircha mahsulot yo‘q 😔
+    </p>
+    <p class="text-lg sm:text-xl text-gray-400">
+      Tez orada yangi mahsulotlar qo‘shiladi!
+    </p>
+  </div>
+  {% endif %}
 </div>
 {% endblock %}

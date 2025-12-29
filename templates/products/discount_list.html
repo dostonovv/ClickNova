@@ -2,38 +2,78 @@
 {% block title %}Aksiyadagi mahsulotlar{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-4 py-12">
-  <h1 class="text-5xl font-bold text-red-600 text-center mb-12">Aksiyadagi mahsulotlar</h1>
-  <p class="text-center text-xl text-gray-600 mb-12">Chegirmalardan foydalaning va arzonroq xarid qiling!</p>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+  <!-- Sarlavha -->
+  <div class="text-center mb-12 sm:mb-16">
+    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-red-600 mb-4">
+      Aksiyadagi mahsulotlar 🔥
+    </h1>
+    <p class="text-lg sm:text-xl text-gray-600">Chegirmalardan foydalaning va arzonroq xarid qiling!</p>
+  </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+  <!-- Mahsulotlar -->
+  {% if products %}
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
     {% for product in products %}
-    <a href="{% url 'product_detail' product.pk %}" class="block bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition duration-300">
-      {% if product.image %}
-      <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-64 object-cover">
-      {% else %}
-      <div class="w-full h-64 bg-gray-200 flex items-center justify-center">
-        <span class="text-gray-500 text-xl font-medium">Rasm yo‘q</span>
+    <a href="{% url 'product_detail' product.pk %}"
+       class="group block bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-3">
+
+      <!-- Rasm — gallerydan birinchi rasm -->
+      {% with product.images.all|first as first_img %}
+      <div class="relative overflow-hidden">
+        {% if first_img %}
+        <img src="{{ first_img.image.url }}"
+             alt="{{ product.name }}"
+             class="w-full h-48 sm:h-56 lg:h-64 object-cover transition-transform duration-700 group-hover:scale-110">
+        {% else %}
+        <div class="w-full h-48 sm:h-56 lg:h-64 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+          <span class="text-gray-400 text-lg sm:text-xl font-medium">Rasm yo‘q</span>
+        </div>
+        {% endif %}
+
+        <!-- Chegirma belgisi — katta va ta’sirli -->
+        <div class="absolute top-3 left-3 bg-red-600 text-white px-4 py-2 sm:px-5 sm:py-3 rounded-full text-base sm:text-lg lg:text-xl font-extrabold shadow-lg animate-pulse">
+          -{{ product.discount_percent }}%
+        </div>
       </div>
-      {% endif %}
+      {% endwith %}
 
-      <div class="p-6">
-        <h3 class="text-xl font-bold text-gray-800 mb-3 line-clamp-2">{{ product.name }}</h3>
+      <div class="p-5 sm:p-6 lg:p-8">
+        <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-4 line-clamp-2 group-hover:text-red-600 transition">
+          {{ product.name }}
+        </h3>
 
-        <div class="flex justify-between items-center mt-6">
+        <!-- Narxlar -->
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
           <div>
-            <span class="text-xl text-gray-500 line-through mr-3">${{ product.price|floatformat:2 }}</span>
-            <span class="text-3xl font-bold text-red-600">${{ product.get_discounted_price|floatformat:2 }}</span>
+            <span class="text-lg sm:text-xl text-gray-500 line-through">${{ product.price|floatformat:2 }}</span>
+            <span class="block text-2xl sm:text-3xl font-extrabold text-red-600">${{ product.get_discounted_price|floatformat:2 }}</span>
           </div>
-          <span class="bg-red-600 text-white px-4 py-2 rounded-full text-lg font-bold">
-            -{{ product.discount_percent }}%
+
+          <!-- Stock (agar kerak bo‘lsa) -->
+          {% if product.stock <= 5 and product.stock > 0 %}
+          <span class="text-sm sm:text-base text-orange-600 font-medium">
+            Faqat {{ product.stock }} ta qoldi!
           </span>
+          {% endif %}
         </div>
       </div>
     </a>
-    {% empty %}
-    <p class="text-center text-2xl text-gray-500 col-span-full py-20">Hozircha aksiya yo‘q</p>
     {% endfor %}
   </div>
+  {% else %}
+  <div class="text-center py-20 sm:py-32 bg-gray-50 rounded-3xl">
+    <p class="text-2xl sm:text-3xl lg:text-4xl text-gray-500 mb-6">
+      Hozircha aksiya yo‘q 😔
+    </p>
+    <p class="text-lg sm:text-xl text-gray-400 mb-8">
+      Tez orada yangi chegirmalar qo‘shiladi! Tayyor turing !
+    </p>
+    <a href="{% url 'product_list' %}"
+       class="inline-block bg-red-600 hover:bg-red-700 text-white font-bold text-xl sm:text-2xl py-4 sm:py-5 px-10 sm:px-12 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-xl">
+      Barcha mahsulotlarga qaytish
+    </a>
+  </div>
+  {% endif %}
 </div>
 {% endblock %}

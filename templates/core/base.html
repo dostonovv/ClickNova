@@ -8,79 +8,87 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Inter', system-ui, sans-serif; }
-    .btn-3d {
-      @apply transform transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl active:translate-y-0 active:shadow-lg;
+    .btn-premium {
+      @apply px-5 py-3 text-base font-bold rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl active:scale-95;
+    }
+    .navbar-link {
+      @apply text-base font-medium hover:text-emerald-200 transition;
     }
   </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 flex flex-col">
 
   {% if user.is_authenticated %}
-  <!-- Premium Navbar — Gradient + Shadow -->
+  <!-- Responsive Navbar -->
   <header class="sticky top-0 z-50 bg-gradient-to-r from-emerald-800 to-emerald-900 text-white shadow-2xl">
-    <div class="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center">
-      <h1 class="text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-emerald-200">
-        ClickNova
-      </h1>
-      <nav class="flex items-center gap-10">
-        <!-- Bosh sahifa -->
-        <a href="{% url 'dashboard' %}" class="text-lg font-medium hover:text-emerald-200 transition">
-          Bosh sahifa
-        </a>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex justify-between items-center">
+        <!-- Logo -->
+        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-emerald-200">
+          ClickNova
+        </h1>
 
-        <!-- Do‘kon — Premium Green Button -->
-        <a href="{% url 'product_list' %}" class="btn-3d bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-bold text-lg px-8 py-4 rounded-2xl shadow-xl">
-          Do‘kon 🛒
-        </a>
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex items-center gap-4 lg:gap-8">
+          <a href="{% url 'dashboard' %}" class="navbar-link">Bosh sahifa</a>
+          <a href="{% url 'product_list' %}" class="btn-premium bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800">
+            Do‘kon 🛒
+          </a>
+          <a href="{% url 'discount_products' %}" class="btn-premium bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 flex items-center gap-2">
+            <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/>
+            </svg>
+            Aksiyalar 🔥
+          </a>
+          <a href="{% url 'profile' %}" class="btn-premium bg-gradient-to-r from-emerald-700 to-emerald-800 hover:from-emerald-800 hover:to-emerald-900 flex items-center gap-3">
+            <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+            </svg>
+            @{{ user.username }}
+          </a>
+        </nav>
 
-        <!-- Aksiyalar — Fire Red Button -->
-        <a href="{% url 'discount_products' %}" class="btn-3d bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold text-lg px-8 py-4 rounded-2xl shadow-xl flex items-center gap-3">
-          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/>
-          </svg>
-          Aksiyalar
-        </a>
-
-        <!-- Profile — Elegant Button -->
-        <a href="{% url 'profile' %}" class="btn-3d bg-gradient-to-r from-emerald-700 to-emerald-800 hover:from-emerald-800 hover:to-emerald-900 text-white font-bold text-lg px-8 py-4 rounded-2xl shadow-xl flex items-center gap-4">
-          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-          </svg>
-          {{ user.username }}
-        </a>
-      </nav>
+        <!-- Mobile Navigation — Ikonka bilan qisqa -->
+        <nav class="flex md:hidden items-center gap-4">
+          <a href="{% url 'product_list' %}" class="text-2xl hover:text-emerald-200">🛒</a>
+          <a href="{% url 'discount_products' %}" class="text-2xl hover:text-red-300">🔥</a>
+          <a href="{% url 'profile' %}" class="bg-emerald-700 hover:bg-emerald-600 px-4 py-2 rounded-lg text-sm font-medium">
+            @{{ user.username }}
+          </a>
+        </nav>
+      </div>
     </div>
   </header>
   {% endif %}
 
-  <!-- Flash messages — Premium Style -->
+  <!-- Flash messages — Responsive -->
   {% if messages %}
-  <div class="max-w-7xl mx-auto px-6 mt-8 space-y-6">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 space-y-4">
     {% for message in messages %}
-      <div class="flex items-center gap-6 px-10 py-6 rounded-3xl shadow-2xl border-2 transition-all duration-300
-                  {% if 'error' in message.tags %}bg-red-50 border-red-400 text-red-900 hover:shadow-red-300{% else %}bg-emerald-50 border-emerald-400 text-emerald-900 hover:shadow-emerald-300{% endif %}">
-        <svg class="w-12 h-12 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+      <div class="flex items-center gap-4 px-6 py-5 rounded-2xl shadow-xl border-2
+                  {% if 'error' in message.tags %}bg-red-50 border-red-400 text-red-900{% else %}bg-emerald-50 border-emerald-400 text-emerald-900{% endif %}">
+        <svg class="w-8 h-8 sm:w-10 sm:h-10 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
           {% if 'error' in message.tags %}
             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
           {% else %}
             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
           {% endif %}
         </svg>
-        <span class="text-2xl font-semibold">{{ message }}</span>
+        <span class="text-lg sm:text-xl font-semibold">{{ message }}</span>
       </div>
     {% endfor %}
   </div>
   {% endif %}
 
-  <main class="flex-grow">
+  <main class="flex-grow px-4 sm:px-6 lg:px-8 py-8">
     {% block content %}{% endblock %}
   </main>
 
-  <!-- Premium Footer -->
-  <footer class="bg-gradient-to-r from-emerald-900 to-emerald-800 text-white py-12 mt-auto">
-    <div class="max-w-7xl mx-auto text-center px-6">
-      <p class="text-2xl font-medium">ClickNova © 2025 • Premium Onlayn Do‘kon</p>
-      <p class="text-lg text-emerald-200 mt-4">Millionlab mahsulotlar, tez yetkazib berish</p>
+  <!-- Responsive Footer -->
+  <footer class="bg-gradient-to-r from-emerald-900 to-emerald-800 text-white py-8 mt-auto">
+    <div class="max-w-7xl mx-auto text-center px-4">
+      <p class="text-lg sm:text-xl font-medium">ClickNova © 2025 • Premium Onlayn Do‘kon</p>
+      <p class="text-sm sm:text-base text-emerald-200 mt-3">Millionlab mahsulotlar, tez yetkazib berish</p>
     </div>
   </footer>
 </body>

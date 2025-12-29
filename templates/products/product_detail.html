@@ -2,107 +2,124 @@
 {% block title %}{{ product.name }}{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-4 py-12">
-  <div class="grid lg:grid-cols-2 gap-12">
-    <!-- Gallery — Chap taraf -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+  <div class="grid lg:grid-cols-2 gap-8 lg:gap-16">
+    <!-- Gallery — Chap taraf (mobil da yuqorida) -->
     <div class="order-2 lg:order-1">
-      <!-- Asosiy rasm -->
-      <div class="mb-6 rounded-3xl shadow-2xl overflow-hidden bg-gray-100">
+      <!-- Asosiy rasm — kattaroq va premium -->
+      <div class="mb-6 rounded-3xl shadow-2xl overflow-hidden bg-gray-50 border-2 border-gray-100">
         <img id="mainImage"
              src="{% if product.images.all %}
-                    {% with product.images.all|dictsort:'is_main'|last as main_img %}
-                      {% if main_img.is_main %}{{ main_img.image.url }}{% else %}{{ product.images.first.image.url }}{% endif %}
+                    {% with product.images.filter(is_main=True).first|default:product.images.first as main_img %}
+                      {{ main_img.image.url }}
                     {% endwith %}
                   {% else %}
-                    https://via.placeholder.com/800x800?text=Rasm+yo'q
+                    https://via.placeholder.com/1000x1000?text=No+Image
                   {% endif %}"
              alt="{{ product.name }}"
-             class="w-full h-full object-cover transition-transform duration-500 hover:scale-105 cursor-zoom-in">
+             class="w-full h-96 sm:h-full object-cover transition-all duration-700 hover:scale-105 cursor-zoom-in">
       </div>
 
-      <!-- Kichik rasmlar (thumbnail) -->
+      <!-- Thumbnail rasmlar — chiroyli grid -->
       {% if product.images.count > 1 %}
-      <div class="grid grid-cols-4 sm:grid-cols-5 gap-4">
+      <div class="grid grid-cols-4 sm:grid-cols-5 gap-3 sm:gap-4">
         {% for img in product.images.all %}
-        <div class="rounded-xl shadow-lg overflow-hidden cursor-pointer border-4 transition-all {% if img.is_main %}border-emerald-600{% else %}border-transparent hover:border-emerald-400{% endif %}"
+        <div class="rounded-2xl shadow-lg overflow-hidden cursor-pointer border-4 transition-all duration-300 {% if img.is_main %}border-emerald-500 ring-4 ring-emerald-300{% else %}border-gray-200 hover:border-emerald-400{% endif %}"
              onclick="document.getElementById('mainImage').src='{{ img.image.url }}'">
           <img src="{{ img.image.url }}"
                alt="{{ img.alt_text|default:product.name }}"
-               class="w-full h-32 object-cover">
+               class="w-full h-24 sm:h-32 object-cover hover:opacity-90 transition">
         </div>
         {% endfor %}
       </div>
       {% endif %}
     </div>
 
-    <!-- Ma’lumotlar — O‘ng taraf -->
-    <div class="order-1 lg:order-2 flex flex-col justify-between">
-      <div>
-        {% if product.category %}
-        <a href="#" class="inline-block bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full text-sm font-medium mb-4 hover:bg-emerald-200 transition">
-          {{ product.category.name }}
-        </a>
-        {% endif %}
-
-        <h1 class="text-5xl font-bold text-gray-800 mb-6">{{ product.name }}</h1>
-
-        <!-- Narx — Chegirma bilan -->
-        <div class="mb-8 flex items-end gap-4">
-          {% if product.discount_percent > 0 %}
-          <span class="text-3xl text-gray-500 line-through">${{ product.price|floatformat:2 }}</span>
-          <span class="text-6xl font-bold text-emerald-600">${{ product.get_discounted_price|floatformat:2 }}</span>
-          <span class="bg-red-600 text-white px-5 py-2 rounded-full text-xl font-bold">
-            -{{ product.discount_percent }}%
-          </span>
-          {% else %}
-          <span class="text-6xl font-bold text-emerald-600">${{ product.price|floatformat:2 }}</span>
+    <!-- Ma’lumotlar — O‘ng taraf (mobil da pastda) -->
+    <div class="order-1 lg:order-2">
+      <div class="flex flex-col justify-between h-full">
+        <div>
+          <!-- Kategoriya -->
+          {% if product.category %}
+          <a href="#" class="inline-block bg-emerald-100 text-emerald-800 px-5 py-2 rounded-full text-sm sm:text-base font-semibold mb-6 hover:bg-emerald-200 transition">
+            {{ product.category.name }}
+          </a>
           {% endif %}
+
+          <!-- Nomi -->
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6 leading-tight">
+            {{ product.name }}
+          </h1>
+
+          <!-- Narx — juda ta’sirli -->
+          <div class="mb-10 flex flex-wrap items-end gap-4">
+            {% if product.discount_percent > 0 %}
+            <span class="text-2xl sm:text-3xl text-gray-500 line-through">${{ product.price|floatformat:2 }}</span>
+            <span class="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-emerald-600">${{ product.get_discounted_price|floatformat:2 }}</span>
+            <div class="bg-red-600 text-white px-6 py-3 rounded-full text-xl sm:text-2xl font-extrabold shadow-lg animate-pulse">
+              -{{ product.discount_percent }}%
+            </div>
+            {% else %}
+            <span class="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-emerald-600">${{ product.price|floatformat:2 }}</span>
+            {% endif %}
+          </div>
+
+          <!-- Stock holati — chiroyli badge -->
+          <div class="mb-10">
+            {% if product.stock > 0 %}
+              {% if product.stock <= 5 %}
+              <span class="inline-block bg-orange-100 text-orange-800 px-6 py-3 rounded-full text-lg sm:text-xl font-bold">
+                Faqat {{ product.stock }} ta qoldi! ⚡
+              </span>
+              {% else %}
+              <span class="inline-block bg-emerald-100 text-emerald-800 px-6 py-3 rounded-full text-lg sm:text-xl font-bold">
+                Qolgan: {{ product.stock }} ta ✓
+              </span>
+              {% endif %}
+            {% else %}
+            <span class="inline-block bg-red-100 text-red-800 px-6 py-3 rounded-full text-lg sm:text-xl font-bold">
+              Tugagan 😔
+            </span>
+            {% endif %}
+          </div>
+
+          <!-- Tavsif -->
+          <div class="mb-12">
+            <h3 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">Tavsif</h3>
+            <p class="text-base sm:text-lg text-gray-700 leading-relaxed whitespace-pre-line">
+              {{ product.description|default:"Tavsif mavjud emas" }}
+            </p>
+          </div>
         </div>
 
-        <!-- Stock holati -->
-        <div class="mb-8">
-          {% if product.stock > 0 %}
-          <p class="text-xl text-green-600 font-medium">
-            Qolgan: <strong>{{ product.stock }} ta</strong>
-          </p>
-          {% else %}
-          <p class="text-xl text-red-600 font-medium">Tugagan</p>
-          {% endif %}
-        </div>
-
-        <!-- Tavsif -->
-        <div class="mb-10">
-          <h3 class="text-2xl font-bold text-gray-800 mb-4">Tavsif</h3>
-          <p class="text-gray-700 text-lg leading-relaxed whitespace-pre-line">
-            {{ product.description|default:"Tavsif mavjud emas" }}
-          </p>
-        </div>
-      </div>
-
-      <!-- Sotib olish tugmasi -->
-      <div>
-        {% if user.is_authenticated %}
-          {% if product.stock > 0 %}
-          <form method="post" class="w-full">
-            {% csrf_token %}
-            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-3xl py-6 rounded-3xl shadow-2xl transition transform hover:scale-105 active:scale-95">
-              Sotib olish
+        <!-- Tugmalar — premium va katta -->
+        <div class="space-y-6">
+          {% if user.is_authenticated %}
+            {% if product.stock > 0 %}
+            <form method="post" class="w-full">
+              {% csrf_token %}
+              <button type="submit"
+                      class="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-extrabold text-2xl sm:text-3xl lg:text-4xl py-6 sm:py-7 rounded-3xl shadow-2xl transition-all duration-300 transform hover:scale-105 active:scale-95">
+                Sotib olish 🛒
+              </button>
+            </form>
+            {% else %}
+            <button disabled class="w-full bg-gray-400 text-gray-200 font-extrabold text-2xl sm:text-3xl py-6 rounded-3xl cursor-not-allowed">
+              Tugagan
             </button>
-          </form>
+            {% endif %}
           {% else %}
-          <button disabled class="w-full bg-gray-400 text-gray-200 font-bold text-3xl py-6 rounded-3xl cursor-not-allowed">
-            Tugagan
-          </button>
-          {% endif %}
-        {% else %}
-          <a href="{% url 'login' %}" class="block text-center w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-3xl py-6 rounded-3xl shadow-2xl transition transform hover:scale-105">
+          <a href="{% url 'login' %}"
+             class="block text-center w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-extrabold text-2xl sm:text-3xl lg:text-4xl py-6 sm:py-7 rounded-3xl shadow-2xl transition-all duration-300 transform hover:scale-105">
             Sotib olish uchun kirish
           </a>
-        {% endif %}
+          {% endif %}
 
-        <a href="{% url 'product_list' %}" class="block text-center mt-8 text-emerald-600 hover:underline text-xl font-medium">
-          ← Barcha mahsulotlarga qaytish
-        </a>
+          <a href="{% url 'product_list' %}"
+             class="block text-center text-emerald-600 hover:text-emerald-700 font-semibold text-lg sm:text-xl mt-6">
+            ← Barcha mahsulotlarga qaytish
+          </a>
+        </div>
       </div>
     </div>
   </div>

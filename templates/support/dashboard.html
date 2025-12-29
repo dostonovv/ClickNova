@@ -2,55 +2,103 @@
 {% block title %}Support Admin Panel{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-4 py-12">
-  <h1 class="text-5xl font-bold text-emerald-600 mb-12 text-center">Support Admin Panel</h1>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+  <!-- Sarlavha -->
+  <div class="text-center mb-10 sm:mb-12">
+    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-emerald-600">
+      Support Admin Panel
+    </h1>
+    <p class="text-lg sm:text-xl text-gray-600 mt-4">Barcha buyurtmalarni boshqaring</p>
+  </div>
 
   <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
-    <div class="px-8 py-6 bg-emerald-600 text-white">
-      <h2 class="text-3xl font-bold">Barcha buyurtmalar</h2>
+    <!-- Header -->
+    <div class="px-6 sm:px-8 py-6 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white">
+      <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold">Barcha buyurtmalar</h2>
     </div>
 
+    <!-- Jadval — Responsive (mobil da kartochka ko‘rinishida) -->
     <div class="overflow-x-auto">
-      <table class="w-full min-w-full divide-y divide-gray-200">
+      <!-- Desktop jadval -->
+      <table class="hidden md:table w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
-            <th class="px-6 py-4 text-left text-sm font-medium text-gray-700">ID</th>
-            <th class="px-6 py-4 text-left text-sm font-medium text-gray-700">Foydalanuvchi</th>
-            <th class="px-6 py-4 text-left text-sm font-medium text-gray-700">Mahsulot</th>
-            <th class="px-6 py-4 text-left text-sm font-medium text-gray-700">Narxi</th>
-            <th class="px-6 py-4 text-left text-sm font-medium text-gray-700">Sana</th>
-            <th class="px-6 py-4 text-left text-sm font-medium text-gray-700">Status</th>
-            <th class="px-6 py-4 text-left text-sm font-medium text-gray-700">Amal</th>
+            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Foydalanuvchi</th>
+            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mahsulot</th>
+            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Narxi</th>
+            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sana</th>
+            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amal</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-200">
+        <tbody class="bg-white divide-y divide-gray-200">
           {% for order in orders %}
           <tr class="hover:bg-gray-50 transition">
-            <td class="px-6 py-4 text-sm text-gray-900">#{{ order.id }}</td>
-            <td class="px-6 py-4 text-sm text-gray-900">@{{ order.user.username }}</td>
-            <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ order.product.name }}</td>
-            <td class="px-6 py-4 text-sm font-bold text-emerald-600">${{ order.total_price }}</td>
-            <td class="px-6 py-4 text-sm text-gray-600">{{ order.purchased_at|date:"d M Y, H:i" }}</td>
-            <td class="px-6 py-4">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{{ order.id }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">@{{ order.user.username }}</td>
+            <td class="px-6 py-4 text-sm text-gray-900 font-medium">{{ order.product.name }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-emerald-600">${{ order.total_price|floatformat:2 }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ order.purchased_at|date:"d M Y, H:i" }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">
               <span class="{% if order.is_delivered %}bg-green-100 text-green-800{% else %}bg-orange-100 text-orange-800{% endif %} px-4 py-2 rounded-full text-sm font-medium">
                 {% if order.is_delivered %}Yetkazib berildi{% else %}Yetkazilmoqda{% endif %}
               </span>
             </td>
-            <td class="px-6 py-4">
-              <a href="{% url 'support_order_detail' order.pk %}" class="text-emerald-600 hover:underline font-medium">
+            <td class="px-6 py-4 whitespace-nowrap text-sm">
+              <a href="{% url 'support_order_detail' order.pk %}" class="text-emerald-600 hover:text-emerald-800 font-semibold hover:underline">
                 Batafsil →
               </a>
             </td>
           </tr>
           {% empty %}
           <tr>
-            <td colspan="7" class="px-6 py-12 text-center text-gray-500 text-xl">
+            <td colspan="7" class="px-6 py-16 text-center text-gray-500 text-xl">
               Hozircha buyurtma yo‘q
             </td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
+
+      <!-- Mobil kartochkalar -->
+      <div class="md:hidden divide-y divide-gray-200">
+        {% for order in orders %}
+        <div class="bg-white p-6 hover:bg-gray-50 transition">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <p class="text-lg font-bold text-gray-900">#{{ order.id }}</p>
+              <p class="text-sm text-gray-600">@{{ order.user.username }}</p>
+            </div>
+            <span class="{% if order.is_delivered %}bg-green-100 text-green-800{% else %}bg-orange-100 text-orange-800{% endif %} px-4 py-2 rounded-full text-sm font-medium">
+              {% if order.is_delivered %}Yetkazib berildi{% else %}Yetkazilmoqda{% endif %}
+            </span>
+          </div>
+
+          <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ order.product.name }}</h3>
+
+          <div class="grid grid-cols-2 gap-4 text-sm mb-4">
+            <div>
+              <p class="text-gray-600">Narxi:</p>
+              <p class="font-bold text-emerald-600 text-xl">${{ order.total_price|floatformat:2 }}</p>
+            </div>
+            <div>
+              <p class="text-gray-600">Sana:</p>
+              <p class="font-medium">{{ order.purchased_at|date:"d M Y, H:i" }}</p>
+            </div>
+          </div>
+
+          <a href="{% url 'support_order_detail' order.pk %}"
+             class="inline-block text-emerald-600 hover:text-emerald-800 font-semibold text-base hover:underline">
+            Batafsil ko‘rish →
+          </a>
+        </div>
+        {% empty %}
+        <div class="p-12 text-center text-gray-500 text-xl">
+          Hozircha buyurtma yo‘q
+        </div>
+        {% endfor %}
+      </div>
     </div>
   </div>
 </div>

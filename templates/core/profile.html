@@ -2,42 +2,54 @@
 {% block title %}Profilim{% endblock %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto px-4 py-12">
-  <h1 class="text-6xl font-bold text-emerald-600 text-center mb-16">Profilim</h1>
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+  <!-- Sarlavha -->
+  <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-emerald-600 text-center mb-12 sm:mb-16">
+    Profilim
+  </h1>
 
   <!-- User info kartasi -->
-  <div class="bg-white rounded-3xl shadow-2xl p-10 mb-12">
-    <div class="flex flex-col md:flex-row items-center gap-10">
-      <div class="w-40 h-40 bg-emerald-100 rounded-full flex items-center justify-center shadow-lg">
-        <svg class="w-24 h-24 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <div class="bg-white rounded-3xl shadow-2xl p-8 sm:p-10 mb-12">
+    <div class="flex flex-col md:flex-row items-center gap-8 sm:gap-10">
+      <!-- Avatar -->
+      <div class="w-32 h-32 sm:w-40 sm:h-40 bg-emerald-100 rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
+        <svg class="w-20 h-20 sm:w-24 sm:h-24 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
         </svg>
       </div>
-      <div class="text-center md:text-left">
-        <h2 class="text-4xl font-bold text-gray-800">@{{ user.username }}</h2>
-        <p class="text-2xl text-gray-700 mt-3">{{ user.full_name|default:"Ism belgilanmagan" }}</p>
-        <p class="text-2xl text-gray-700 mt-3">
-          <strong>Telefon:</strong> <span class="text-emerald-600 font-bold">{{ user.phone_number|default:"Belgilanmagan" }}</span>
+
+      <!-- Ma’lumotlar -->
+      <div class="text-center md:text-left flex-1">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-800">@{{ user.username }}</h2>
+        <p class="text-xl sm:text-2xl text-gray-700 mt-3">{{ user.full_name|default:"Ism belgilanmagan" }}</p>
+        <p class="text-xl sm:text-2xl text-gray-700 mt-3">
+          <strong>Telefon:</strong>
+          <span class="text-emerald-600 font-bold">{{ user.phone_number|default:"Belgilanmagan" }}</span>
         </p>
-        <p class="text-xl text-gray-600 mt-3">{{ user.email }}</p>
+        <p class="text-lg sm:text-xl text-gray-600 mt-3">{{ user.email }}</p>
       </div>
     </div>
   </div>
 
   <!-- Statistikalar -->
-  <div class="grid md:grid-cols-3 gap-8 mb-16">
-    <div class="bg-white p-10 rounded-3xl shadow-2xl text-center">
-      <p class="text-gray-600 text-xl">Jami buyurtmalar</p>
-      <p class="text-6xl font-bold text-emerald-600 mt-6">{{ total_orders }}</p>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-12 sm:mb-16">
+    <!-- Jami buyurtmalar -->
+    <div class="bg-white p-8 sm:p-10 rounded-3xl shadow-2xl text-center">
+      <p class="text-gray-600 text-lg sm:text-xl">Jami buyurtmalar</p>
+      <p class="text-5xl sm:text-6xl font-bold text-emerald-600 mt-6">{{ total_orders }}</p>
     </div>
-    <div class="bg-white p-10 rounded-3xl shadow-2xl text-center">
-      <p class="text-gray-600 text-xl">Sarflangan pul</p>
-      <p class="text-6xl font-bold text-emerald-600 mt-6">{{ total_spent }}</p>
+
+    <!-- Sarflangan pul -->
+    <div class="bg-white p-8 sm:p-10 rounded-3xl shadow-2xl text-center">
+      <p class="text-gray-600 text-lg sm:text-xl">Sarflangan pul</p>
+      <p class="text-5xl sm:text-6xl font-bold text-emerald-600 mt-6">{{ total_spent }}</p>
     </div>
-    <div class="bg-white p-10 rounded-3xl shadow-2xl text-center flex items-center justify-center">
+
+    <!-- Chiqish -->
+    <div class="bg-white p-8 sm:p-10 rounded-3xl shadow-2xl text-center flex items-center justify-center">
       <form method="post" action="{% url 'logout' %}">
         {% csrf_token %}
-        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold text-3xl py-6 px-16 rounded-2xl transition transform hover:scale-105 shadow-xl">
+        <button type="submit" class="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold text-2xl sm:text-3xl py-5 sm:py-6 px-12 sm:px-16 rounded-2xl transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-xl">
           Chiqish
         </button>
       </form>
@@ -45,33 +57,39 @@
   </div>
 
   <!-- Sotib olingan mahsulotlar -->
-  <h2 class="text-4xl font-bold text-gray-800 mb-10 text-center">Sotib olingan mahsulotlar</h2>
+  <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 text-center mb-8 sm:mb-10">
+    Sotib olingan mahsulotlar
+  </h2>
+
   {% if orders %}
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 sm:gap-10">
     {% for order in orders %}
-    <div class="bg-white rounded-3xl shadow-2xl overflow-hidden hover:shadow-3xl transition-all duration-300">
+    <div class="bg-white rounded-3xl shadow-2xl overflow-hidden hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-2">
+      <!-- Rasm -->
       {% with order.product.images.all|first as first_img %}
-      {% if first_img %}
-      <img src="{{ first_img.image.url }}" alt="{{ order.product.name }}" class="w-full h-56 object-cover">
-      {% else %}
-      <div class="w-full h-56 bg-gray-200 flex items-center justify-center">
-        <span class="text-gray-500 text-xl">Rasm yo‘q</span>
+      <div class="relative overflow-hidden">
+        {% if first_img %}
+        <img src="{{ first_img.image.url }}" alt="{{ order.product.name }}" class="w-full h-48 sm:h-56 object-cover transition-transform duration-500 hover:scale-110">
+        {% else %}
+        <div class="w-full h-48 sm:h-56 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+          <span class="text-gray-400 text-lg sm:text-xl font-medium">Rasm yo‘q</span>
+        </div>
+        {% endif %}
       </div>
-      {% endif %}
       {% endwith %}
 
-      <div class="p-8">
-        <h3 class="text-xl font-bold text-gray-800 mb-4 line-clamp-2">{{ order.product.name }}</h3>
-        <p class="text-3xl font-bold text-emerald-600 mb-3">${{ order.total_price }}</p>
-        <p class="text-gray-600">{{ order.purchased_at|date:"d M Y, H:i" }}</p>
+      <div class="p-6 sm:p-8">
+        <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-4 line-clamp-2">{{ order.product.name }}</h3>
+        <p class="text-2xl sm:text-3xl font-bold text-emerald-600 mb-3">${{ order.total_price|floatformat:2 }}</p>
+        <p class="text-sm sm:text-base text-gray-600">{{ order.purchased_at|date:"d M Y, H:i" }}</p>
       </div>
     </div>
     {% endfor %}
   </div>
   {% else %}
-  <div class="text-center py-20 bg-gray-50 rounded-3xl">
-    <p class="text-3xl text-gray-500">Hozircha buyurtma yo‘q 😔</p>
-    <a href="{% url 'product_list' %}" class="inline-block mt-8 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-2xl py-4 px-12 rounded-xl transition">
+  <div class="text-center py-16 sm:py-20 bg-gray-50 rounded-3xl">
+    <p class="text-2xl sm:text-3xl text-gray-500 mb-6">Hozircha buyurtma yo‘q 😔</p>
+    <a href="{% url 'product_list' %}" class="inline-block bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-bold text-xl sm:text-2xl py-4 sm:py-5 px-10 sm:px-12 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-xl">
       Do‘konga o‘tish
     </a>
   </div>

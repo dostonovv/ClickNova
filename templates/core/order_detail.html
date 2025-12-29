@@ -2,51 +2,85 @@
 {% block title %}Buyurtma #{{ order.id }}{% endblock %}
 
 {% block content %}
-<div class="max-w-5xl mx-auto px-4 py-12">
-  <h1 class="text-5xl font-bold text-emerald-600 mb-8">Buyurtma #{{ order.id }}</h1>
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+  <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-emerald-600 text-center mb-10 sm:mb-12">
+    Buyurtma #{{ order.id }}
+  </h1>
 
-  <div class="bg-white p-10 rounded-3xl shadow-2xl">
-    <!-- Mahsulot rasmi va nomi -->
-    <div class="grid md:grid-cols-2 gap-12 mb-12">
-      <div>
-        {% if order.product.image %}
-        <img src="{{ order.product.image.url }}" alt="{{ order.product.name }}" class="w-full rounded-3xl shadow-xl">
-        {% else %}
-        <div class="w-full h-96 bg-gray-200 rounded-3xl flex items-center justify-center">
-          <span class="text-gray-500 text-3xl">Rasm yo‘q</span>
+  <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+    <!-- Mahsulot rasmi va ma’lumoti -->
+    <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 p-6 sm:p-8 lg:p-10">
+      <!-- Gallery — Chap taraf -->
+      <div class="order-2 lg:order-1">
+        <!-- Asosiy rasm -->
+        <div class="mb-6 rounded-3xl shadow-xl overflow-hidden bg-gray-100">
+          <img id="mainOrderImage"
+               src="{% if order.product.images.all %}{% with order.product.images.filter(is_main=True).first|default:order.product.images.first as main_img %}{{ main_img.image.url }}{% endwith %}{% else %}https://via.placeholder.com/800x800?text=Rasm+yo'q{% endif %}"
+               alt="{{ order.product.name }}"
+               class="w-full h-full object-cover transition-transform duration-500 hover:scale-105 cursor-zoom-in">
+        </div>
+
+        <!-- Kichik rasmlar -->
+        {% if order.product.images.count > 1 %}
+        <div class="grid grid-cols-3 sm:grid-cols-4 gap-4">
+          {% for img in order.product.images.all %}
+          <div class="rounded-xl shadow-lg overflow-hidden cursor-pointer border-4 transition-all {% if img.is_main %}border-emerald-600{% else %}border-transparent hover:border-emerald-400{% endif %}"
+               onclick="document.getElementById('mainOrderImage').src='{{ img.image.url }}'">
+            <img src="{{ img.image.url }}" alt="{{ img.alt_text|default:order.product.name }}" class="w-full h-32 object-cover">
+          </div>
+          {% endfor %}
         </div>
         {% endif %}
       </div>
 
-      <div>
-        <h2 class="text-4xl font-bold text-gray-900 mb-6">{{ order.product.name }}</h2>
-        <p class="text-3xl font-bold text-emerald-600 mb-8">${{ order.total_price }}</p>
-        <p class="text-xl text-gray-700 mb-4">Buyurtma vaqti: <strong>{{ order.purchased_at|date:"d M Y, H:i" }}</strong></p>
+      <!-- Ma’lumotlar — O‘ng taraf -->
+      <div class="order-1 lg:order-2 flex flex-col justify-between">
+        <div>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+            {{ order.product.name }}
+          </h2>
+
+          <!-- Narx -->
+          <p class="text-3xl sm:text-4xl lg:text-5xl font-bold text-emerald-600 mb-8">
+            ${{ order.total_price|floatformat:2 }}
+          </p>
+
+          <!-- Buyurtma vaqti -->
+          <p class="text-lg sm:text-xl text-gray-700 mb-6">
+            Buyurtma vaqti: <strong>{{ order.purchased_at|date:"d M Y, H:i" }}</strong>
+          </p>
+
+          <!-- Yetkazib berish ma’lumoti -->
+          <div class="bg-emerald-50 p-6 sm:p-8 rounded-2xl">
+            <h3 class="text-2xl sm:text-3xl font-bold text-emerald-800 mb-6">Yetkazib berish</h3>
+
+            <p class="text-lg sm:text-xl text-gray-700 mb-4">
+              Taxminiy muddat: <strong>{{ order.product.delivery_days }} kun</strong>
+            </p>
+
+            <p class="text-lg sm:text-xl font-medium mb-4">
+              Holati:
+              <span class="{% if order.is_delivered %}text-green-600{% else %}text-orange-600{% endif %} font-bold">
+                {% if order.is_delivered %}Yetkazib berildi{% else %}Yetkazilmoqda{% endif %}
+              </span>
+            </p>
+
+            <p class="text-base sm:text-lg text-gray-600">
+              Buyurtma holati admin tomonidan yangilanadi. Savollaringiz bo‘lsa, support bilan bog‘laning.
+            </p>
+          </div>
+        </div>
+
+        <!-- Orqaga qaytish -->
+        <div class="mt-10 text-center lg:text-left">
+          <a href="{% url 'dashboard' %}" class="inline-block text-emerald-600 hover:text-emerald-700 font-medium text-lg sm:text-xl flex items-center gap-2">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Bosh sahifaga qaytish
+          </a>
+        </div>
       </div>
-    </div>
-
-    <!-- Yetkazib berish ma’lumoti -->
-    <div class="bg-emerald-50 p-8 rounded-2xl mb-12">
-      <h3 class="text-3xl font-bold text-emerald-800 mb-6">Yetkazib berish</h3>
-
-      <p class="text-xl text-gray-700 mb-4">
-        Taxminiy muddat: <strong>{{ order.product.delivery_days }} kun</strong>
-      </p>
-
-      <p class="text-xl {% if order.is_delivered %}text-green-600{% else %}text-orange-600{% endif %} font-medium mb-4">
-        Status: <strong>{% if order.is_delivered %}Yetkazib berildi{% else %}Yetkazilmoqda{% endif %}</strong>
-      </p>
-
-      <p class="text-lg text-gray-600">
-        Buyurtma holati admin tomonidan yangilanadi. Savollaringiz bo‘lsa, support bilan bog‘laning.
-      </p>
-    </div>
-
-    <!-- Orqaga qaytish -->
-    <div class="text-center">
-      <a href="{% url 'dashboard' %}" class="text-emerald-600 hover:underline text-2xl font-medium">
-        ← Bosh sahifaga qaytish
-      </a>
     </div>
   </div>
 </div>
