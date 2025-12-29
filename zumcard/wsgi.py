@@ -1,18 +1,12 @@
-"""
-WSGI config for zumcard project.
-
-It exposes the WSGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/6.0/howto/deployment/wsgi/
-"""
-
 import os
-
 from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'zumcard.settings')
 
 application = get_wsgi_application()
+
+# Whitenoise qo‘sh — media fayllarni berish uchun
 from whitenoise import WhiteNoise
+from django.conf import settings  # <--- BU QATORNI QO‘SH!
+
 application = WhiteNoise(application, root=settings.MEDIA_ROOT, prefix=settings.MEDIA_URL)
