@@ -13,9 +13,10 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = [
-    'clicknova-uz.onrender.com',  # <--- Render bergan linkni bu yerga yoz (deploy bo‘lganda)
     'localhost',
     '127.0.0.1',
+    'clicknova.onrender.com',  # <--- BU YERGA RENDER BERGAN DOMENNI YOZ!
+    '.onrender.com',  # <--- Qo‘shimcha: barcha sub-domenlar uchun (xavfsiz)
 ]
 
 
