@@ -1,0 +1,50 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ title }} | ClickNova Admin{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+  <a href="{% url 'admin:index' %}" class="text-3xl font-extrabold text-emerald-600 hover:text-emerald-700 transition">
+    ClickNova Admin
+  </a>
+</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block extrastyle %}
+<style>
+  #header {
+    background: linear-gradient(to right, #065f46, #047857);
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  #branding h1 a {
+    color: white !important;
+    font-size: 2rem;
+  }
+  .module caption {
+    background: #10b981;
+    color: white;
+    font-weight: bold;
+  }
+  .button, input[type=submit], input[type=button], .submit-row input, a.button {
+    background: #10b981 !important;
+    border: none !important;
+    border-radius: 0.75rem !important;
+    padding: 0.75rem 1.5rem !important;
+    font-weight: bold !important;
+    transition: all 0.3s !important;
+  }
+  .button:hover {
+    background: #059669 !important;
+    transform: translateY(-2px);
+  }
+  .deletelink {
+    background: #dc2626 !important;
+  }
+  .deletelink:hover {
+    background: #b91c1c !important;
+  }
+</style>
+{% endblock %}
